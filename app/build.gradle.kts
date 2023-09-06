@@ -1,6 +1,10 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
 }
 
 android {
@@ -18,6 +22,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        val pixabayKey: String = gradleLocalProperties(rootDir).getProperty("PIXABAY_API_KEY")
+        buildConfigField("String", "PIXABAY_API_KEY", "\"$pixabayKey\"")
     }
 
     buildTypes {
@@ -36,8 +43,14 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
@@ -66,4 +79,38 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // Retrofit & Moshi
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation ("com.squareup.moshi:moshi-kotlin:1.12.0")
+
+    // WorkerManager
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
+
+    // Hilt
+    implementation("com.google.dagger:hilt-android:2.44")
+    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    // Hilt WorkerManager
+    implementation("androidx.hilt:hilt-work:1.0.0")
+    kapt("androidx.hilt:hilt-compiler:1.0.0")
+    // Hilt Compose
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    // Hilt Fragment
+    implementation("androidx.hilt:hilt-navigation-fragment:1.0.0")
+
+    // ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
+    // ViewModel Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+
+    // Lifecycle
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    // Lifecycle Compose
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
+
+    // Navigation
+    implementation("androidx.navigation:navigation-compose:2.5.3")
+
+    // EasyPermissions
+    implementation("pub.devrel:easypermissions:3.0.0")
 }

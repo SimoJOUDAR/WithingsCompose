@@ -1,4 +1,4 @@
-package com.mjoudar.withingscompose.ui.theme
+package com.mjoudar.withingscompose.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -64,7 +64,7 @@ fun WithingsComposeTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = LatoTypograpgy,
         content = content
     )
 }
