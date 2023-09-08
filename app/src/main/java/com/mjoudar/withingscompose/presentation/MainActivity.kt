@@ -6,10 +6,15 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.mjoudar.withingscompose.presentation.NavGraph.HomeScreenRoute
+import com.mjoudar.withingscompose.presentation.NavGraph.ResultScreenRoute
+import com.mjoudar.withingscompose.presentation.ui.screens.home_screen.HomeScreen
+import com.mjoudar.withingscompose.presentation.ui.screens.result_screen.ResultScreen
 import com.mjoudar.withingscompose.presentation.ui.theme.WithingsComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,31 +22,31 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         setContent {
+            val navController = rememberNavController()
+
+            val sharedViewModel: SharedViewModel = hiltViewModel()
+
             WithingsComposeTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    NavHost(
+                        navController = navController,
+                        startDestination = HomeScreenRoute
+                    ) {
+                        composable(HomeScreenRoute) {
+                            HomeScreen(navController, sharedViewModel)
+                        }
+                        composable(ResultScreenRoute) {
+                            ResultScreen(this@MainActivity, sharedViewModel)
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    WithingsComposeTheme {
-        Greeting("Android")
     }
 }
