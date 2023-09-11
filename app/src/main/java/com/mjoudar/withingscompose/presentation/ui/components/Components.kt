@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,6 +46,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -223,10 +225,18 @@ fun Processing() {
             color = MaterialTheme.colorScheme.primary,
             style = LatoTypograpgy.titleLarge
         )
+        Spacer(modifier = Modifier.height(32.dp))
         Image(
-            painter = rememberAsyncImagePainter(R.drawable.ic_processing, imageLoader),
+            modifier = Modifier
+                .weight(2f, false)
+                .clip(RoundedCornerShape(16.dp)),
+            painter = rememberAsyncImagePainter(
+                model = R.drawable.ic_processing,
+                imageLoader = imageLoader,
+                contentScale = ContentScale.Fit
+            ),
             contentDescription = null,
-            modifier = Modifier.fillMaxWidth()
+            contentScale = ContentScale.Fit
         )
     }
 }
@@ -252,9 +262,7 @@ fun DisplayGif(fileName: String) {
 fun DisplayResult(state: ResultViewModel.GifUiState) {
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(16.dp)
+            .fillMaxSize()
     ) {
         when (state) {
             ResultViewModel.GifUiState.Loading -> Processing()
