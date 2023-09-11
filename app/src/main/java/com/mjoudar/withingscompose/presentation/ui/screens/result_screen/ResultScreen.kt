@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -23,7 +24,12 @@ import com.mjoudar.withingscompose.presentation.ui.components.DisplayResult
 fun ResultScreen(sharedViewModel: SharedViewModel) {
     val viewModel = hiltViewModel<ResultViewModel>()
     val gifUiState by viewModel.processingState.collectAsState()
-    viewModel.createGif(LocalContext.current, sharedViewModel.links, LocalLifecycleOwner.current)
+    val context = LocalContext.current.applicationContext
+    val owner = LocalLifecycleOwner.current
+
+    LaunchedEffect(Unit) {
+        viewModel.createGif(context, sharedViewModel.links, owner)
+    }
 
     Column(
         modifier = Modifier

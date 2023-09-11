@@ -38,6 +38,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
@@ -46,9 +47,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,9 +66,11 @@ import java.io.File
 import kotlin.random.Random
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchBar(onSearch: (String) -> Unit) {
     var text by remember { mutableStateOf("") }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Row(
         modifier = Modifier
@@ -109,6 +112,7 @@ fun SearchBar(onSearch: (String) -> Unit) {
 
         IconButton(
             onClick = {
+                keyboardController?.hide()
                 onSearch(text)
             }
         ) {
@@ -258,15 +262,6 @@ fun DisplayResult(state: ResultViewModel.GifUiState) {
             is ResultViewModel.GifUiState.Error -> ErrorPage()
         }
     }
-}
-
-@Preview
-@Composable
-fun SearchBarPreview() {
-    SearchBar(
-        onSearch = {
-        }
-    )
 }
 
 
