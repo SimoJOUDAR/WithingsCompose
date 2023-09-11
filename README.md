@@ -1,4 +1,4 @@
-# WithingsTest2 app
+# WithingsCompose
 
 
 ## Preview Video
