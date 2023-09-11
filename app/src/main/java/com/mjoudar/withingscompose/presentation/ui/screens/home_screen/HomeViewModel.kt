@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mjoudar.withingscompose.data.repositories.ImagesRepository
 import com.mjoudar.withingscompose.domain.models.ImageInfo
+import com.mjoudar.withingscompose.utils.UNKNOWN_EXCEPTION
 import com.mjoudar.withingscompose.utils.toImageInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -33,14 +34,12 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getResults(input: String) = viewModelScope.launch(Dispatchers.IO) {
-        val defaultException =
-            Exception("An unidentified error occurred. We couldn't load the data. Please, check your internet connection.")
         val response = repository.getImages(input)
         if (response.succeeded) {
-            items = response.body.hits?.map { it.toImageInfo() }?.toMutableList() ?: mutableListOf()
+            items = response.body.toImageInfo()
             _imageLot.emit(ImagesUiState.Success(items))
         } else {
-            val e = response.exception ?: defaultException
+            val e = response.exception ?: UNKNOWN_EXCEPTION
             _imageLot.emit(ImagesUiState.Error(e))
         }
     }

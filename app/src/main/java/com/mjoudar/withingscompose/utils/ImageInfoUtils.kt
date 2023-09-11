@@ -11,6 +11,5 @@ fun HitsItem.toImageInfo() =
         displayUrl = webformatURL
     )
 
-fun PixabayResponse.toImageInfo(): List<ImageInfo> {
-    return hits?.map { it.toImageInfo() } ?: listOf()
-}
+fun PixabayResponse.toImageInfo() =
+    hits?.map { it.toImageInfo() }?.toMutableList() ?: mutableListOf()

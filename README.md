@@ -2,7 +2,8 @@
 
 
 ## Preview Video
-coming soon
+
+https://github.com/SimoJOUDAR/WithingsCompose/assets/80898080/58e2b0f3-8c0f-4098-8033-a240b5836888
 
 ## Intro
 This is an Android app for generating gif images.

@@ -1,5 +1,6 @@
 package com.mjoudar.withingscompose.presentation.ui.components
 
+import android.net.Uri
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -30,7 +32,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -42,19 +48,20 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.ImageDecoderDecoder
 import com.mjoudar.withingscompose.R
-import com.mjoudar.withingscompose.presentation.ui.theme.DarkGrey
+import com.mjoudar.withingscompose.presentation.ui.screens.result_screen.ResultViewModel
 import com.mjoudar.withingscompose.presentation.ui.theme.ErrorRed
 import com.mjoudar.withingscompose.presentation.ui.theme.LatoTypograpgy
 import com.mjoudar.withingscompose.presentation.ui.theme.LightGray
 import com.mjoudar.withingscompose.presentation.ui.theme.MediumGrey
+import java.io.File
 import kotlin.random.Random
 
 
@@ -201,26 +208,56 @@ fun Processing() {
         }
         .build()
 
-    Image(
-        painter = rememberAsyncImagePainter(R.drawable.ic_processing, imageLoader),
-        contentDescription = null,
-        modifier = Modifier.fillMaxSize()
-    )
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            modifier = Modifier.wrapContentSize(),
+            text = stringResource(R.string.processing),
+            color = MaterialTheme.colorScheme.primary,
+            style = LatoTypograpgy.titleLarge
+        )
+        Image(
+            painter = rememberAsyncImagePainter(R.drawable.ic_processing, imageLoader),
+            contentDescription = null,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
 }
 
 @Composable
 fun DisplayGif(fileName: String) {
+    val uri = Uri.fromFile(File(LocalContext.current.getExternalFilesDir(null), fileName))
     val imageLoader = ImageLoader.Builder(LocalContext.current)
         .components {
             add(ImageDecoderDecoder.Factory())
         }
         .build()
 
+
     Image(
-        painter = rememberAsyncImagePainter(fileName, imageLoader),
+        painter = rememberAsyncImagePainter(uri, imageLoader),
         contentDescription = null,
         modifier = Modifier.fillMaxSize()
     )
+}
+
+@Composable
+fun DisplayResult(state: ResultViewModel.GifUiState) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(16.dp)
+    ) {
+        when (state) {
+            ResultViewModel.GifUiState.Loading -> Processing()
+            is ResultViewModel.GifUiState.Success -> DisplayGif(state.fileName)
+            is ResultViewModel.GifUiState.Error -> ErrorPage()
+        }
+    }
 }
 
 @Preview

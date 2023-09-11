@@ -12,7 +12,6 @@ import com.mjoudar.withingscompose.utils.IMAGE_URLS
 import com.mjoudar.withingscompose.utils.getGifFileNaming
 import java.io.File
 import java.io.FileOutputStream
-import java.util.concurrent.ExecutionException
 
 class GifCreatorWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
 
@@ -22,7 +21,7 @@ class GifCreatorWorker(context: Context, params: WorkerParameters) : Worker(cont
         val imageUrls = inputData.getStringArray(IMAGE_URLS) ?: return Result.failure()
 
         return try {
-            with(createGifFromUrls(applicationContext, imageUrls)) {
+            with(createGifFromUrls(applicationContext, imageUrls, fileName)) {
                 if (this) {
                     val outputData = Data.Builder()
                         .putString(GIF_FILE_NAME, fileName)
@@ -32,16 +31,13 @@ class GifCreatorWorker(context: Context, params: WorkerParameters) : Worker(cont
                 else
                     Result.failure()
             }
-        } catch (e: ExecutionException) {
-            e.printStackTrace()
-            Result.failure()
-        } catch (e: InterruptedException) {
+        } catch (e: Exception) {
             e.printStackTrace()
             Result.failure()
         }
     }
 
-    private fun createGifFromUrls(context: Context, imageUrls: Array<String>): Boolean {
+    private fun createGifFromUrls(context: Context, imageUrls: Array<String>, fileName: String): Boolean {
         val outputGifFile = File(context.getExternalFilesDir(null), fileName)
         val bitmapList = mutableListOf<Bitmap>()
 
@@ -66,7 +62,6 @@ class GifCreatorWorker(context: Context, params: WorkerParameters) : Worker(cont
             finish()
         }
         outputStream.close()
-
         return true
     }
 

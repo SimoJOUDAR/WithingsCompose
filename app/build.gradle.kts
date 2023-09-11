@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace = "com.mjoudar.withingscompose"
-    compileSdk = 33
+    compileSdk = 32
 
     defaultConfig {
         applicationId = "com.mjoudar.withingscompose"
         minSdk = 28
-        targetSdk = 33
+        targetSdk = 32
         versionCode = 1
         versionName = "1.0"
 
